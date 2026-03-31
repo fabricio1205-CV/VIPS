@@ -128,40 +128,33 @@
 
   <template id="recordTemplate">
     <article class="record card">
-      <div class="record-head">
-        <div>
+      <div class="record-row">
+        <div class="record-client-block">
           <h3 class="record-client"></h3>
-          <p class="record-alt muted"></p>
+          <p class="record-meta">
+            <span class="record-alt"></span>
+            <span class="record-period"></span>
+          </p>
         </div>
-        <div class="record-tags">
-          <span class="tag tag-period record-period"></span>
-          <span class="tag tag-sales record-sales"></span>
-        </div>
-      </div>
 
-      <div class="record-grid">
-        <div>
-          <span class="field-label">Vendedor</span>
-          <div class="record-vendor"></div>
+        <div class="record-sales-wrap">
+          <span class="record-sales-label">Venta</span>
+          <strong class="record-sales"></strong>
         </div>
-        <div>
-          <span class="field-label">Fx Compra 2025</span>
-          <div class="record-fx"></div>
-        </div>
-        <div>
-          <span class="field-label">Status 2025</span>
-          <div class="record-status2025"></div>
-        </div>
-      </div>
 
-      <div class="record-form">
-        <label>
-          <span>Estado</span>
+        <div class="record-state-wrap">
           <select class="record-state"></select>
-        </label>
+        </div>
+
+        <div class="record-actions">
+          <button type="button" class="btn btn-light btn-comment-toggle">Comentario</button>
+        </div>
+      </div>
+
+      <div class="record-comment-panel hidden">
         <label>
           <span>Comentarios</span>
-          <textarea class="record-comments" rows="3" placeholder="Comentario opcional"></textarea>
+          <textarea class="record-comments" rows="2" placeholder="Comentario opcional"></textarea>
         </label>
       </div>
 

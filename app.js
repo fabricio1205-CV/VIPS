@@ -223,14 +223,12 @@
       const fb = getFeedback(record.id);
       const danger = record.ventaPesos <= 0;
       const submitted = state.submissions[reportKey(record.vendedor, record.mes, record.anio)];
+      const hasComment = Boolean((fb.comentarios || '').trim());
 
       node.querySelector('.record-client').textContent = record.cliente;
-      node.querySelector('.record-alt').textContent = record.nombreAlternativo || 'Sin nombre alternativo';
-      node.querySelector('.record-vendor').textContent = record.vendedor;
-      node.querySelector('.record-fx').textContent = record.fxCompra2025 || '-';
-      node.querySelector('.record-status2025').textContent = record.status2025 || '-';
-      node.querySelector('.record-sales').textContent = formatCurrency(record.ventaPesos);
+      node.querySelector('.record-alt').textContent = record.nombreAlternativo ? `Alt: ${record.nombreAlternativo}` : '';
       node.querySelector('.record-period').textContent = `${record.mes} ${record.anio}`;
+      node.querySelector('.record-sales').textContent = formatCurrency(record.ventaPesos);
       node.querySelector('.record-updated').textContent = fb.updatedAt ? `Última actualización: ${formatDateTime(fb.updatedAt)}` : 'Sin cambios guardados';
 
       const sentEl = node.querySelector('.record-sent');
@@ -250,17 +248,38 @@
       stateSelect.disabled = !danger;
       stateSelect.required = danger;
 
+      const commentsPanel = node.querySelector('.record-comment-panel');
       const commentsEl = node.querySelector('.record-comments');
+      const commentToggle = node.querySelector('.btn-comment-toggle');
+
       commentsEl.value = fb.comentarios || '';
       commentsEl.disabled = !danger;
-      if (!danger) commentsEl.placeholder = 'No requiere comentario';
+      if (!danger) {
+        commentsEl.placeholder = 'No requiere comentario';
+        commentToggle.disabled = true;
+        commentToggle.textContent = 'Sin comentario';
+      } else {
+        commentToggle.textContent = hasComment ? 'Ver comentario' : 'Agregar comentario';
+      }
+
+      if (hasComment) commentsPanel.classList.remove('hidden');
+
+      commentToggle.addEventListener('click', () => {
+        if (commentToggle.disabled) return;
+        commentsPanel.classList.toggle('hidden');
+        if (!commentsPanel.classList.contains('hidden')) commentsEl.focus();
+      });
 
       if (canEditRecord(record)) {
         stateSelect.addEventListener('change', () => saveRecordFeedback(record, stateSelect.value, commentsEl.value));
-        commentsEl.addEventListener('input', () => saveRecordFeedback(record, stateSelect.value, commentsEl.value));
+        commentsEl.addEventListener('input', () => {
+          saveRecordFeedback(record, stateSelect.value, commentsEl.value);
+          commentToggle.textContent = commentsEl.value.trim() ? 'Ver comentario' : 'Agregar comentario';
+        });
       } else {
         stateSelect.disabled = true;
         commentsEl.disabled = true;
+        commentToggle.disabled = true;
       }
 
       fragment.appendChild(node);
